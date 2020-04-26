@@ -11,10 +11,11 @@ class Config(object):
     """
     DEBUG = False
     TESTING = False
-    SQLALCHEMY_DATABASE_URI = '"postgresql:///wordcount_dev"'
+    SQLALCHEMY_DATABASE_URI = 'postgresql:///flask'
     BOOTSTRAP_FONTAWESOME = True
     SECRET_KEY = "MINHACHAVESECRETA"
     CSRF_ENABLED = True
+    SQLALCHEMY_ECHO = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 

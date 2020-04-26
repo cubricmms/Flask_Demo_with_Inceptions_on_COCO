@@ -11,10 +11,6 @@ from app.forms import ExampleForm, LoginForm
 from app.models import User
 
 
-@app.route('/')
-def index():
-    return render_template('index.html')
-
 
 @app.route('/list/')
 def posts():

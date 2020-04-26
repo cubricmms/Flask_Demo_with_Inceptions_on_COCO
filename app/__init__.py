@@ -16,6 +16,10 @@ app.config.from_object('app.configuration.DevelopmentConfig')
 
 bs = Bootstrap(app)
 db = SQLAlchemy(app)
+with app.app_context():
+    from . import routes  # Import routes
+
+    db.create_all()  # Create database tables for our data models
 
 lm = LoginManager()
 lm.init_app(app)
