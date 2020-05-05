@@ -1,28 +1,34 @@
-# -*- encoding: utf-8 -*-
-"""
-Python Aplication Template
-Licence: GPLv3
-"""
-
+"""Initialize app."""
 from flask import Flask
-from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_migrate import Migrate
 
-app = Flask(__name__)
+db = SQLAlchemy()
+login_manager = LoginManager()
+migrate = Migrate()
 
-# Configuration of application, see configuration.py, choose one and uncomment.
-app.config.from_object('app.configuration.DevelopmentConfig')
 
-bs = Bootstrap(app)
-db = SQLAlchemy(app)
-with app.app_context():
-    from . import routes  # Import routes
+def create_app():
+    """Construct the core app object."""
+    app = Flask(__name__, instance_relative_config=False)
 
-    db.create_all()  # Create database tables for our data models
+    # Application Configuration
+    app.config.from_object('configuration.Config')
 
-lm = LoginManager()
-lm.init_app(app)
-lm.login_view = 'login'
+    # Initialize Plugins
+    db.init_app(app)
 
-from app import views, models
+    login_manager.init_app(app)
+
+    migrate.init_app(app, db)
+
+    with app.app_context():
+        from . import routes
+        from . import auth
+
+        # Register Blueprints
+        app.register_blueprint(routes.main_bp)
+        app.register_blueprint(auth.auth_bp)
+
+        return app

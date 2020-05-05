@@ -11,7 +11,6 @@ from app.forms import ExampleForm, LoginForm
 from app.models import User
 
 
-
 @app.route('/list/')
 def posts():
     return render_template('list.html')
@@ -49,15 +48,13 @@ def before_request():
     g.user = current_user
 
 
-@lm.user_loader
-def load_user(id):
-    return User.query.get(int(id))
+
 
 
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
-    if g.user is not None and g.user.is_authenticated():
-        return redirect(url_for('index'))
+    # if g.user is not None and g.user.is_authenticated():
+    #     return redirect(url_for('index'))
     form = LoginForm()
     if form.validate_on_submit():
         login_user(g.user)

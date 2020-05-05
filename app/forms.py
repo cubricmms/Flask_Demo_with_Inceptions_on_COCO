@@ -1,23 +1,29 @@
-# -*- encoding: utf-8 -*-
-"""
-Python Aplication Template
-Licence: GPLv3
-"""
-
-from flask_wtf import Form
-
-from wtforms import TextField, TextAreaField, DateTimeField, PasswordField, BooleanField
-from wtforms.validators import Required
+"""Signup & login forms."""
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, SubmitField
+from wtforms.validators import DataRequired, Email, EqualTo, Length, Optional
 
 
-class ExampleForm(Form):
-    title = TextField(u'Título', validators=[Required()])
-    content = TextAreaField(u'Conteúdo')
-    date = DateTimeField(u'Data', format='%d/%m/%Y %H:%M')
+class SignupForm(FlaskForm):
+    """User Signup Form."""
+    username = StringField('Name', validators=[DataRequired()])
+    email = StringField('Email',
+                        validators=[Length(min=6),
+                                    Email(message='Enter a valid email.'),
+                                    DataRequired()])
+    password = PasswordField('Password',
+                             validators=[DataRequired(),
+                                         Length(min=6, message='Select a stronger password.')])
+    confirm = PasswordField('Confirm Your Password',
+                            validators=[DataRequired(),
+                                        EqualTo('password', message='Passwords must match.')])
+    website = StringField('Website', validators=[Optional()])
+    submit = SubmitField('Register')
 
 
-# recaptcha = RecaptchaField(u'Recaptcha')
-
-class LoginForm(Form):
-    user = TextField(u'Usuário', validators=[Required()])
-    password = PasswordField(u'Senha', validators=[Required()])
+class LoginForm(FlaskForm):
+    """User Login Form."""
+    email = StringField('Email', validators=[DataRequired(),
+                                             Email(message='Enter a valid email.')])
+    password = PasswordField('Password', validators=[DataRequired()])
+    submit = SubmitField('Log In')
