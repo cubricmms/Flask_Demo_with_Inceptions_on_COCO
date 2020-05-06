@@ -2,7 +2,7 @@ from datetime import datetime as dt
 
 from flask import current_app as app
 from flask import request, render_template, Blueprint, flash, redirect, url_for, abort, g
-from flask_login import login_user, current_user
+from flask_login import login_user, current_user, login_required, logout_user
 from sqlalchemy.exc import IntegrityError
 
 from .core import db, photos
@@ -30,7 +30,7 @@ def register():
                 db.session.add(new_user)
                 db.session.commit()
                 flash('Thanks for registering!', 'success')
-                return redirect(url_for('main_bp.index'))
+                return redirect(url_for('main_bp.login'))
             except IntegrityError:
                 db.session.rollback()
                 flash('ERROR! Email ({}) already exists.'.format(form.email.data), 'error')
@@ -49,15 +49,22 @@ def login():
                 db.session.commit()
                 login_user(user)
                 flash('Thanks for logging in, {}'.format(current_user.email))
-                return redirect(url_for('recipes.index'))
+                return redirect(url_for('main_bp.index'))
             else:
                 flash('ERROR! Incorrect login credentials.', 'error')
     return render_template('/auth/login.html', form=form)
 
 
 @main_bp.route('/logout')
+@login_required
 def logout():
-    return render_template('base.html')
+    user = current_user
+    user.authenticated = False
+    db.session.add(user)
+    db.session.commit()
+    logout_user()
+    flash('Goodbye!', 'info')
+    return redirect(url_for('main_bp.login'))
 
 
 @main_bp.route('/upload', methods=['GET', 'POST'])

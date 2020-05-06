@@ -29,7 +29,7 @@ def create_app():
 
         @login_manager.user_loader
         def load_user(user_id):
-            return User.get(user_id)
+            return User.query.filter(User.id == int(user_id)).first()
 
         # Register Blueprints
         app.register_blueprint(routes.main_bp)
