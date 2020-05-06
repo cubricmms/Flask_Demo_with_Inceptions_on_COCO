@@ -1,6 +1,12 @@
-export FLASK_APP=run.py
 export FLASK_DEBUG=1
-export APP_CONFIG_FILE=configuration.py
-export SQLALCHEMY_TRACK_MODIFICATIONS=False
-export DATABASE_URL='postgres://jing@localhost/flask'
+
 export SECRET_KEY='WEREQC'
+export FLASK_APP=run.py
+export FLASK_ENV=development
+
+# export APP_CONFIG_FILE=configuration.py
+
+export DATABASE_URL='postgres://jing@localhost/flask'
+export SQLALCHEMY_TRACK_MODIFICATIONS=False
+
+export UPLOAD_FOLDER='/Users/jing/Desktop/pg/uploads'

@@ -1,12 +1,7 @@
 """Initialize app."""
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager
-from flask_migrate import Migrate
-
-db = SQLAlchemy()
-login_manager = LoginManager()
-migrate = Migrate()
+from app.core import db, login_manager, migrate, rdb, cache_rdb
+# from flask_caching import RedisCache
 
 
 def create_app():
@@ -16,12 +11,19 @@ def create_app():
     # Application Configuration
     app.config.from_object('configuration.Config')
 
+    # 处理 X-FORWARD- 系列 HTTP 头
+    # app.wsgi_app = ProxyFix(app.wsgi_app)
+
     # Initialize Plugins
     db.init_app(app)
 
     login_manager.init_app(app)
 
     migrate.init_app(app, db)
+
+    # rdb.init_app(app, config_prefix='REDIS')
+    # cache_rdb.init_app(app, config_prefix='CACHE')
+    # backend = RedisCache(cache_rdb, key_prefix='pg:cache:')
 
     with app.app_context():
         from . import routes

@@ -23,3 +23,6 @@ class Config:
     # Flask-SQLAlchemy
     SQLALCHEMY_DATABASE_URI = environ.get('DATABASE_URL')
     SQLALCHEMY_TRACK_MODIFICATIONS = environ.get('SQLALCHEMY_TRACK_MODIFICATIONS')
+
+    # Upload
+    UPLOAD_FOLDER = environ.get('UPLOAD_FOLDER')
