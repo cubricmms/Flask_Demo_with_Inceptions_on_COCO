@@ -32,3 +32,6 @@ class Config:
 
     UPLOADED_PHOTOS_DEST = TOP_LEVEL_DIR + '/app/static/img/'
     UPLOADED_PHOTOS_URL = 'http://localhost:5000/static/img/'
+
+    # enables the Cross-Site Request Forgery (CSRF) protection in your forms
+    WTF_CSRF_ENABLED = True

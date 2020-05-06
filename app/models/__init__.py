@@ -37,6 +37,14 @@ class User(db.Model):
                       index=False,
                       unique=False,
                       nullable=False)
+    authenticated = db.Column(db.Boolean, default=False)
+
+    def __init__(self, username, email, create, admin):
+        self.username = username
+        self.email = email
+        self.created_on = create
+        self.admin = admin
+        self.authenticated = False
 
     def set_password(self, password):
         """Create hashed password."""
@@ -49,20 +57,22 @@ class User(db.Model):
     def __repr__(self):
         return '<User {}>'.format(self.username)
 
+    @property
     def is_authenticated(self):
-        return True
+        """Return True if the user is authenticated."""
+        return self.authenticated
 
+    @property
     def is_active(self):
+        """Always True, as all users are active."""
         return True
 
+    @property
     def is_anonymous(self):
         return False
 
     def get_id(self):
-        return self.id
-
-    def __repr__(self):
-        return '<User %r>' % self.nickname
+        return str(self.id)
 
 
 class Photo(db.Model):

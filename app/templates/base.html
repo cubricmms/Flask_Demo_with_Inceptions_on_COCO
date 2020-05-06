@@ -34,7 +34,7 @@
         <div class="collapse navbar-collapse" id="recipes-navbar-collapse-1">
           <ul class="nav navbar-nav">
             <li><a href="#">My Uploads</a></li>
-            <li><a href="#">Upload Image</a></li>
+            <li><a href="{{ url_for('main_bp.upload') }}">Upload Image</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
 		    {% if g.user %}
@@ -48,11 +48,16 @@
         </div><!--/.nav-collapse -->
       </div><!-- /.container -->
     </nav>
+        <br>
+        <br>
+        <br>
+        <br>
     {% for message in get_flashed_messages() %}
         <div class="flash">{{ message }}</div>
     {% endfor %}
     <div class="container">
       <div class="content">
+
         <!-- child template -->
         {% block content %}
         {% endblock %}

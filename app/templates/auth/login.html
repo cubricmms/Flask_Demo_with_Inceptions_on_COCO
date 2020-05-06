@@ -1,18 +1,25 @@
 {% extends 'base.html' %}
+{% from "_form_macros.html" import render_field %}
 
 {% block header %}
   <h1>{% block title %}Log In{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
-  <br>
-  <br>
-  <br>
-  <form method="post">
-    <label for="username">Username</label>
-    <input name="username" id="username" required>
-    <label for="password">Password</label>
-    <input type="password" name="password" id="password" required>
-    <input type="submit" value="Log In">
+
+<div class="user-registration">
+  <div class="page-header">
+    <h2>Log In</h2>
+  </div>
+    <form action="{{ url_for('main_bp.login') }}" method="post">
+    {{ form.csrf_token }}
+    <dl>
+      {{ render_field(form.email, placeholder="Email address") }}
+      {{ render_field(form.password, placeholder="Password") }}
+    </dl>
+    <button class="btn btn-sm btn-success" type="submit">Log In</button>
   </form>
+  <em>Need an account? </em><a href="/register">Signup!!</a>
+</div>
+
 {% endblock %}
