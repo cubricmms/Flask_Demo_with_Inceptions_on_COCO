@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block content %}
+ 
+<div class="add-recipe">
+ 
+<div class="page-header">
+ 
+<h2>Add a New Recipe</h2>
+ 
+</div>
+
+	<div class="add-recipe">
+	  <div class="page-header">
+	    <h2>Add a New Animal Pic</h2>
+	  </div>
+	  <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
+	    {{ form.csrf_token }}
+	    <dl>
+	      {{ render_field(form.recipe_title, placeholder="Enter Recipe Title") }}
+	      {{ render_field(form.recipe_description, placeholder="Enter Recipe Description") }}
+	      {{ render_field(form.recipe_image) }}
+	    </dl>
+	    <button class="btn btn-sm btn-success" type="submit">Add Recipe</button>
+	  </form>
+	</div>
+ 
+</div>
+ 
+ 
+{% endblock %}

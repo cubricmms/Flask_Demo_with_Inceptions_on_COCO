@@ -2,6 +2,8 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Email, EqualTo, Length, Optional
+from flask_wtf.file import FileField, FileAllowed, FileRequired
+from app.core import IMAGES
 
 
 class SignupForm(FlaskForm):
@@ -27,3 +29,7 @@ class LoginForm(FlaskForm):
                                              Email(message='Enter a valid email.')])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Log In')
+
+
+class UploadImageForm(FlaskForm):
+    recipe_image = FileField('Animal Image', validators=[FileRequired(), FileAllowed(IMAGES, 'Images only!')])

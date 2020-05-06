@@ -1,7 +1,8 @@
 """Initialize app."""
 from flask import Flask
-from app.core import db, login_manager, migrate, rdb, cache_rdb
-# from flask_caching import RedisCache
+from app.core import db, login_manager, migrate, rdb, cache_rdb, photos
+from flask_uploads import configure_uploads, patch_request_class
+from .models import User
 
 
 def create_app():
@@ -11,26 +12,27 @@ def create_app():
     # Application Configuration
     app.config.from_object('configuration.Config')
 
-    # 处理 X-FORWARD- 系列 HTTP 头
-    # app.wsgi_app = ProxyFix(app.wsgi_app)
-
     # Initialize Plugins
     db.init_app(app)
 
     login_manager.init_app(app)
+    login_manager.login_view = 'login'
+
+    # Initial upload with photos, set default upload size to 16 megabytes
+    configure_uploads(app, photos)
+    patch_request_class(app)  # set maximum file size, default is 16MB
 
     migrate.init_app(app, db)
 
-    # rdb.init_app(app, config_prefix='REDIS')
-    # cache_rdb.init_app(app, config_prefix='CACHE')
-    # backend = RedisCache(cache_rdb, key_prefix='pg:cache:')
-
     with app.app_context():
         from . import routes
-        from . import auth
+
+        @login_manager.user_loader
+        def load_user(user_id):
+            return User.get(user_id)
 
         # Register Blueprints
         app.register_blueprint(routes.main_bp)
-        app.register_blueprint(auth.auth_bp)
+        # app.register_blueprint(auth.auth_bp)
 
         return app

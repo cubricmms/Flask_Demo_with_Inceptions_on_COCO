@@ -9,4 +9,4 @@ export FLASK_ENV=development
 export DATABASE_URL='postgres://jing@localhost/flask'
 export SQLALCHEMY_TRACK_MODIFICATIONS=False
 
-export UPLOAD_FOLDER='/Users/jing/Desktop/pg/uploads'
+export TOP_LEVEL_DIR='/Users/jing/Desktop/pg'

@@ -25,4 +25,10 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = environ.get('SQLALCHEMY_TRACK_MODIFICATIONS')
 
     # Upload
-    UPLOAD_FOLDER = environ.get('UPLOAD_FOLDER')
+    TOP_LEVEL_DIR = environ.get('TOP_LEVEL_DIR')
+    # Uploads
+    UPLOADS_DEFAULT_DEST = TOP_LEVEL_DIR + '/app/static/img/'
+    UPLOADS_DEFAULT_URL = 'http://localhost:5000/static/img/'
+
+    UPLOADED_PHOTOS_DEST = TOP_LEVEL_DIR + '/app/static/img/'
+    UPLOADED_PHOTOS_URL = 'http://localhost:5000/static/img/'

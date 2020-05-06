@@ -1,12 +1,7 @@
 # -*- encoding: utf-8 -*-
-"""
-Python Aplication Template
-Licence: GPLv3
-"""
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from app import db
-from flask_login import UserMixin
-from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class User(db.Model):
@@ -64,7 +59,24 @@ class User(db.Model):
         return False
 
     def get_id(self):
-        return unicode(self.id)
+        return self.id
 
     def __repr__(self):
-        return '<User %r>' % (self.nickname)
+        return '<User %r>' % self.nickname
+
+
+class Photo(db.Model):
+    __tablename__ = "photo"
+
+    id = db.Column(db.Integer, primary_key=True)
+    image_filename = db.Column(db.String, default=None, nullable=True)
+    image_url = db.Column(db.String, default=None, nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('dev_users.id'))
+
+    def __init__(self, title, description, user_id, is_public, image_filename=None, image_url=None):
+        self.image_filename = image_filename
+        self.image_url = image_url
+        self.user_id = user_id
+
+    def __repr__(self):
+        return '<id: {}, user_id: {}, filename: {}>'.format(self.id, self.user_id, self.recipe_title, )
