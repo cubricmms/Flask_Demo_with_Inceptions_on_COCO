@@ -13,6 +13,7 @@ app/static/.webassets-cache/
 app/static/dist/css/
 app/static/dist/js/
 app/static/src/
+app/static/img/
 app/templates/dashboard.jinja2
 app/templates/layout.jinja2
 app/templates/login.jinja2

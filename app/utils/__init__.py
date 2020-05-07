@@ -1,3 +1,5 @@
+# -*- encoding: utf-8 -*-
+
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 

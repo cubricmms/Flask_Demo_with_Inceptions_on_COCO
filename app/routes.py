@@ -1,12 +1,11 @@
 from datetime import datetime as dt
 
-from flask import current_app as app
-from flask import request, render_template, Blueprint, flash, redirect, url_for, abort, g
+from flask import request, render_template, Blueprint, flash, redirect, url_for, abort
 from flask_login import login_user, current_user, login_required, logout_user
 from sqlalchemy.exc import IntegrityError
 
 from .core import db, photos
-from .forms import SignupForm, LoginForm
+from .forms import SignupForm, LoginForm, UploadImageForm
 from .models import Photo, User
 
 # Blueprint Configuration
@@ -68,20 +67,39 @@ def logout():
 
 
 @main_bp.route('/upload', methods=['GET', 'POST'])
+@login_required
 def upload():
-    if request.method == 'POST' and 'photo' in request.files:
-        filename = photos.save(request.files['photo'])
-        rec = Photo(filename=filename, user=g.user.id)
-        rec.store()
-        flash("Photo saved.")
-        return redirect(url_for('show', id=rec.id))
-    return render_template('upload.html')
+    form = UploadImageForm()
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            filename = photos.save(request.files['animal_image'])
+            url = photos.url(filename)
+            photo = Photo(current_user.id, image_filename=filename, image_url=url)
+            db.session.add(photo)
+            db.session.commit()
+            flash('New image, {}, added!'.format(photo.image_filename), 'success')
+            return redirect(url_for("main_bp.show", usr=current_user.username, id=photo.id))
+        else:
+            # flash_errors(form)
+            flash('ERROR! Recipe was not added.', 'error')
+    return render_template('upload.html', form=form)
 
 
-@app.route('/photo/<id>')
-def show(id):
-    photo = Photo.load(id)
+@main_bp.route('/<usr>/<id>')
+@login_required
+def show(usr, id):
+    photo = Photo.query.filter(Photo.id == int(id)).first()
     if photo is None:
         abort(404)
-    url = photos.url(photo.filename)
-    return render_template('show.html', url=url, photo=photo)
+    url = photos.url(photo.image_filename)
+    return render_template('image-display.html', url=url, photo=photo.image_filename)
+
+
+@main_bp.route('/show/<usr>/<uid>')
+@login_required
+def show_all(usr, uid):
+    _photos = Photo.query.filter(Photo.user_id == int(uid)).all()
+    if photos is None:
+        abort(404)
+    # url = photos.url(photo.image_filename)
+    return render_template('my-upload.html', photos=_photos)

@@ -83,10 +83,11 @@ class Photo(db.Model):
     image_url = db.Column(db.String, default=None, nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('dev_users.id'))
 
-    def __init__(self, title, description, user_id, is_public, image_filename=None, image_url=None):
+    def __init__(self, user_id, image_filename=None, image_url=None):
         self.image_filename = image_filename
         self.image_url = image_url
         self.user_id = user_id
 
     def __repr__(self):
-        return '<id: {}, user_id: {}, filename: {}>'.format(self.id, self.user_id, self.recipe_title, )
+        return '<id: {}, user_id: {}, filename: {}, url: {}>'.format(self.id, self.user_id, self.image_filename,
+                                                                     self.image_url)

@@ -1,7 +1,8 @@
 """Initialize app."""
 from flask import Flask
-from app.core import db, login_manager, migrate, rdb, cache_rdb, photos
 from flask_uploads import configure_uploads, patch_request_class
+
+from app.core import db, login_manager, migrate, photos
 from .models import User
 
 

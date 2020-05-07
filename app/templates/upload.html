@@ -3,19 +3,17 @@
 
 {% block content %}
 
+<div class="add-animal">
+	<div class="page-header">
+		<h2>Add a New Animal Image</h2>
+	</div>
+	<form action="{{ url_for('main_bp.upload') }}" method="post" enctype="multipart/form-data">
+		{{ form.csrf_token }}
+		<dl>
+			{{ render_field(form.animal_image) }}
+		</dl>
+		<button class="btn btn-sm btn-success" type="submit">Add Animal Image</button>
+	</form>
 </div>
 
-	<div class="add-recipe">
-	  <div class="page-header">
-	    <h2>Add a New Animal Pic</h2>
-	  </div>
-	  <form method=POST enctype=multipart/form-data action="{{ url_for('main_bp.upload') }}">
-		  <input type=file name=photo>
-		  <input type=submit value=Upload>
-	  </form>
-	</div>
- 
-</div>
- 
- 
 {% endblock %}
