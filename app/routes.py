@@ -68,48 +68,52 @@ def logout():
     return redirect(url_for('main_bp.login'))
 
 
+def save_and_predict(file):
+    filename = photos.save(file)
+    url = photos.url(filename)
+    path = photos.path(filename)
+    payload = {"instances": [get_image_np(path).tolist()]}
+    res = requests.post("http://localhost:8080/v1/models/default:predict", json=payload)
+    predictions = res.json().get('predictions')[0]
+    num_detections = predictions.get('num_detections')
+    num_detections = int(num_detections)
+    detection_classes, detection_boxes, detection_scores = predictions.get('detection_classes')[:num_detections], \
+                                                           predictions.get('detection_boxes')[:num_detections], \
+                                                           predictions.get('detection_scores')[:num_detections]
+
+    photo = Photo(current_user.id, image_filename=filename, image_url=url, num_detection=num_detections,
+                  boxes=detection_boxes, classes=detection_classes, score=detection_scores)
+    db.session.add(photo)
+    db.session.commit()
+    flash('New image, {}, added!'.format(photo.image_filename), 'success')
+
+
 @main_bp.route('/upload', methods=['GET', 'POST'])
 @login_required
 def upload():
     form = UploadImageForm()
 
-    img_urls = []
     if request.method == 'POST':
         if form.validate_on_submit():
-            filename = photos.save(request.files['animal_image'])
-            url = photos.url(filename)
-            photo = Photo(current_user.id, image_filename=filename, image_url=url)
-            db.session.add(photo)
-            img_urls.append(photo.id)
-            db.session.commit()
-            flash('New image, {}, added!'.format(photo.image_filename), 'success')
-            return redirect(url_for('main_bp.show_all', usr=current_user.username, uid=current_user.id))
+            file = request.files['animal_image']
+            save_and_predict(file)
+            return redirect(url_for('main_bp.show_all'))
         elif request.files:
             file_obj = request.files
             for f in file_obj:
                 file = request.files.get(f)
-                filename = photos.save(file)
-                url = photos.url(filename)
-                photo = Photo(current_user.id, image_filename=filename, image_url=url)
-                db.session.add(photo)
-                img_urls.append(photo.id)
-            db.session.commit()
-            flash('Image batch added!', 'success')
-            return redirect(url_for('main_bp.show_all', usr=current_user.username, uid=current_user.id))
+                save_and_predict(file)
+            return redirect(url_for('main_bp.show_all'))
         else:
-            flash('ERROR! Recipe was not added.', 'error')
+            flash('ERROR! Image was not added.', 'error')
     return render_template('upload.html', form=form)
 
 
-@main_bp.route('/show/<usr>/<uid>')
+@main_bp.route('/show-all')
 @login_required
-def show_all(usr, uid):
+def show_all():
+    uid = current_user.id
     _photos = Photo.query.filter(Photo.user_id == int(uid)).all()
     if photos is None:
         abort(404)
-    for photo in _photos:
-        url = photos.path(photo.image_filename)
-        payload = {"instances": [get_image_np(url).tolist()]}
-        res = requests.post("http://localhost:8080/v1/models/default:predict", json=payload)
-        print(res.json())
     return render_template('my-upload.html', photos=_photos)

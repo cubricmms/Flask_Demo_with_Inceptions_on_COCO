@@ -98,5 +98,6 @@ class Photo(db.Model):
         self.num_detection = num_detection
 
     def __repr__(self):
-        return '<id: {}, user_id: {}, filename: {}, url: {}>'.format(self.id, self.user_id, self.image_filename,
-                                                                     self.image_url)
+        return '<id: {}, user_id: {}, filename: {}, url: {}, boxes: {}, score: {}, classes:{}, num_detection: {}>'.format(
+            self.id, self.user_id, self.image_filename,
+            self.image_url, self.boxes, self.score, self.classes, self.num_detection)
