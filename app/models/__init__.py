@@ -82,11 +82,20 @@ class Photo(db.Model):
     image_filename = db.Column(db.String, default=None, nullable=True)
     image_url = db.Column(db.String, default=None, nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('dev_users.id'))
+    boxes = db.Column(db.ARRAY(db.Float()), default=None, nullable=True)
+    score = db.Column(db.ARRAY(db.Float()), default=None, nullable=True)
+    classes = db.Column(db.ARRAY(db.Integer()), default=None, nullable=True)
+    num_detection = db.Column(db.Integer, default=None, nullable=True)
 
-    def __init__(self, user_id, image_filename=None, image_url=None):
+    def __init__(self, user_id, image_filename=None, image_url=None, boxes=None, score=None, classes=None,
+                 num_detection=None):
         self.image_filename = image_filename
         self.image_url = image_url
         self.user_id = user_id
+        self.boxes = boxes
+        self.score = score
+        self.classes = classes
+        self.num_detection = num_detection
 
     def __repr__(self):
         return '<id: {}, user_id: {}, filename: {}, url: {}>'.format(self.id, self.user_id, self.image_filename,

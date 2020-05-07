@@ -1,19 +1,40 @@
 {% extends "base.html" %}
 {% from "_form_macros.html" import render_field %}
 
+{% block head %}
+	{{ dropzone.load_css() }}
+	{{ dropzone.style('border: 2px dashed #0087F7; margin: 1%; min-height: 200px;') }}
+{% endblock %}
+
 {% block content %}
+
 
 <div class="add-animal">
 	<div class="page-header">
 		<h2>Add a New Animal Image</h2>
 	</div>
-	<form action="{{ url_for('main_bp.upload') }}" method="post" enctype="multipart/form-data">
-		{{ form.csrf_token }}
-		<dl>
-			{{ render_field(form.animal_image) }}
-		</dl>
-		<button class="btn btn-sm btn-success" type="submit">Add Animal Image</button>
-	</form>
+
+	<div class="row">
+		<div class="col-sm-3">
+			<form action="{{ url_for('main_bp.upload') }}" method="post" enctype="multipart/form-data">
+				{{ form.csrf_token }}
+				<dl>
+					{{ render_field(form.animal_image) }}
+				</dl>
+				<button class="btn btn-sm btn-success" type="submit">Add Animal Image</button>
+			</form>
+		</div>
+		<div class="col-sm-9">
+			{{ dropzone.create(action='main_bp.upload') }}
+		</div>
+	</div>
 </div>
 
 {% endblock %}
+
+{% block script %}
+{{ dropzone.load_js() }}
+{% endblock %}
+
+{{ dropzone.config(redirect_url=url_for('main_bp.show_all', usr=current_user.username, uid=current_user.id)) }}
+

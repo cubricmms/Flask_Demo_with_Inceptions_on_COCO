@@ -3,6 +3,7 @@ from flask_migrate import Migrate
 from flask_redis import FlaskRedis
 from flask_sqlalchemy import SQLAlchemy
 from flask_uploads import UploadSet, IMAGES
+from flask_dropzone import Dropzone
 
 db = SQLAlchemy()
 login_manager = LoginManager()
@@ -15,3 +16,5 @@ rdb = FlaskRedis()
 cache_rdb = FlaskRedis()
 
 photos = UploadSet('photos', IMAGES)
+
+drop_zone = Dropzone()

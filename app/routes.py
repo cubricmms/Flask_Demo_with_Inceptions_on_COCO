@@ -1,5 +1,6 @@
 from datetime import datetime as dt
 
+import requests
 from flask import request, render_template, Blueprint, flash, redirect, url_for, abort
 from flask_login import login_user, current_user, login_required, logout_user
 from sqlalchemy.exc import IntegrityError
@@ -7,6 +8,7 @@ from sqlalchemy.exc import IntegrityError
 from .core import db, photos
 from .forms import SignupForm, LoginForm, UploadImageForm
 from .models import Photo, User
+from .utils import get_image_np
 
 # Blueprint Configuration
 main_bp = Blueprint('main_bp', __name__, template_folder='templates', static_folder='static')
@@ -70,29 +72,33 @@ def logout():
 @login_required
 def upload():
     form = UploadImageForm()
+
+    img_urls = []
     if request.method == 'POST':
         if form.validate_on_submit():
             filename = photos.save(request.files['animal_image'])
             url = photos.url(filename)
             photo = Photo(current_user.id, image_filename=filename, image_url=url)
             db.session.add(photo)
+            img_urls.append(photo.id)
             db.session.commit()
             flash('New image, {}, added!'.format(photo.image_filename), 'success')
-            return redirect(url_for("main_bp.show", usr=current_user.username, id=photo.id))
+            return redirect(url_for('main_bp.show_all', usr=current_user.username, uid=current_user.id))
+        elif request.files:
+            file_obj = request.files
+            for f in file_obj:
+                file = request.files.get(f)
+                filename = photos.save(file)
+                url = photos.url(filename)
+                photo = Photo(current_user.id, image_filename=filename, image_url=url)
+                db.session.add(photo)
+                img_urls.append(photo.id)
+            db.session.commit()
+            flash('Image batch added!', 'success')
+            return redirect(url_for('main_bp.show_all', usr=current_user.username, uid=current_user.id))
         else:
-            # flash_errors(form)
             flash('ERROR! Recipe was not added.', 'error')
     return render_template('upload.html', form=form)
-
-
-@main_bp.route('/<usr>/<id>')
-@login_required
-def show(usr, id):
-    photo = Photo.query.filter(Photo.id == int(id)).first()
-    if photo is None:
-        abort(404)
-    url = photos.url(photo.image_filename)
-    return render_template('image-display.html', url=url, photo=photo.image_filename)
 
 
 @main_bp.route('/show/<usr>/<uid>')
@@ -101,5 +107,9 @@ def show_all(usr, uid):
     _photos = Photo.query.filter(Photo.user_id == int(uid)).all()
     if photos is None:
         abort(404)
-    # url = photos.url(photo.image_filename)
+    for photo in _photos:
+        url = photos.path(photo.image_filename)
+        payload = {"instances": [get_image_np(url).tolist()]}
+        res = requests.post("http://localhost:8080/v1/models/default:predict", json=payload)
+        print(res.json())
     return render_template('my-upload.html', photos=_photos)

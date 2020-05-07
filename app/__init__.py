@@ -1,8 +1,9 @@
 """Initialize app."""
-from flask import Flask
+from flask import Flask, url_for
+from flask_login import current_user
 from flask_uploads import configure_uploads, patch_request_class
 
-from app.core import db, login_manager, migrate, photos
+from app.core import db, login_manager, migrate, photos, drop_zone
 from .models import User
 
 
@@ -23,6 +24,12 @@ def create_app():
     configure_uploads(app, photos)
     patch_request_class(app)  # set maximum file size, default is 16MB
 
+    drop_zone.init_app(app)
+    app.config['DROPZONE_UPLOAD_MULTIPLE'] = True
+    app.config['DROPZONE_ALLOWED_FILE_CUSTOM'] = True
+    app.config['DROPZONE_ALLOWED_FILE_TYPE'] = 'image/*'
+    app.config['DROPZONE_PARALLEL_UPLOADS'] = 3
+
     migrate.init_app(app, db)
 
     with app.app_context():
@@ -30,6 +37,7 @@ def create_app():
 
         @login_manager.user_loader
         def load_user(user_id):
+
             return User.query.filter(User.id == int(user_id)).first()
 
         # Register Blueprints
