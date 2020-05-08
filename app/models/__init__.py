@@ -86,9 +86,11 @@ class Photo(db.Model):
     score = db.Column(db.ARRAY(db.Float()), default=None, nullable=True)
     classes = db.Column(db.ARRAY(db.Integer()), default=None, nullable=True)
     num_detection = db.Column(db.Integer, default=None, nullable=True)
+    processed_filename = db.Column(db.String, default=None, nullable=True)
+    processed_url = db.Column(db.String, default=None, nullable=True)
 
     def __init__(self, user_id, image_filename=None, image_url=None, boxes=None, score=None, classes=None,
-                 num_detection=None):
+                 num_detection=None, processed_filename=None, processed_url=None):
         self.image_filename = image_filename
         self.image_url = image_url
         self.user_id = user_id
@@ -96,6 +98,8 @@ class Photo(db.Model):
         self.score = score
         self.classes = classes
         self.num_detection = num_detection
+        self.processed_filename = processed_filename
+        self.processed_url = processed_url
 
     def __repr__(self):
         return '<id: {}, user_id: {}, filename: {}, url: {}, boxes: {}, score: {}, classes:{}, num_detection: {}>'.format(

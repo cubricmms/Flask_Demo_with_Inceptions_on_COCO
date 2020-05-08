@@ -27,7 +27,7 @@ def create_app():
     app.config['DROPZONE_UPLOAD_MULTIPLE'] = True
     app.config['DROPZONE_ALLOWED_FILE_CUSTOM'] = True
     app.config['DROPZONE_ALLOWED_FILE_TYPE'] = 'image/*'
-    app.config['DROPZONE_PARALLEL_UPLOADS'] = 3
+    app.config['DROPZONE_PARALLEL_UPLOADS'] = 8
 
     migrate.init_app(app, db)
 

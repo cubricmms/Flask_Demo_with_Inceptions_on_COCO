@@ -8,7 +8,11 @@ from sqlalchemy.exc import IntegrityError
 from .core import db, photos
 from .forms import SignupForm, LoginForm, UploadImageForm
 from .models import Photo, User
-from .utils import get_image_np
+from .utils import get_image_np, coco_labels
+
+from PIL import Image, ImageFont, ImageDraw, ImageEnhance
+from werkzeug.datastructures import FileStorage
+from io import BytesIO
 
 # Blueprint Configuration
 main_bp = Blueprint('main_bp', __name__, template_folder='templates', static_folder='static')
@@ -16,7 +20,7 @@ main_bp = Blueprint('main_bp', __name__, template_folder='templates', static_fol
 
 @main_bp.route('/')
 def index():
-    return render_template('base.html')
+    return render_template('index.html')
 
 
 @main_bp.route('/register', methods=['GET', 'POST'])
@@ -81,8 +85,27 @@ def save_and_predict(file):
                                                            predictions.get('detection_boxes')[:num_detections], \
                                                            predictions.get('detection_scores')[:num_detections]
 
+    source_img = Image.open(photos.path(filename)).convert("RGB")
+    width, height = source_img.size
+    for idx, box in enumerate(detection_boxes):
+        ymin, xmin, ymax, xmax = height * box[0], width * box[1], height * box[2], width * box[3]
+        draw = ImageDraw.Draw(source_img)
+        draw.rectangle(((xmin, ymin), (xmax, ymax)))
+        draw.text((xmin, ymin),
+                  "class: %s confidence %s" % (
+                  coco_labels[int(detection_classes[idx])], str(round(detection_scores[idx], 2))))
+    image_io = BytesIO()
+    source_img.save(image_io, format="JPEG")
+
+    image_io.seek(0)
+
+    processed_filename = 'proccessed_' + filename
+    image_storage = FileStorage(stream=image_io, filename=processed_filename)
+    photos.save(image_storage)
+    processed_url = photos.url(processed_filename)
     photo = Photo(current_user.id, image_filename=filename, image_url=url, num_detection=num_detections,
-                  boxes=detection_boxes, classes=detection_classes, score=detection_scores)
+                  boxes=detection_boxes, classes=detection_classes, score=detection_scores,
+                  processed_filename=processed_filename, processed_url=processed_url)
     db.session.add(photo)
     db.session.commit()
     flash('New image, {}, added!'.format(photo.image_filename), 'success')
@@ -114,6 +137,7 @@ def upload():
 def show_all():
     uid = current_user.id
     _photos = Photo.query.filter(Photo.user_id == int(uid)).all()
+
     if photos is None:
         abort(404)
     return render_template('my-upload.html', photos=_photos)

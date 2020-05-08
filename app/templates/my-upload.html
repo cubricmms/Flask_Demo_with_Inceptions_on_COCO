@@ -9,10 +9,16 @@
 
 	<div class="row">
 		{% for photo in photos %}
-		<div class="col-sm-4">
-			<h4>{{ photo.image_filename }}</h4>
+		<div class="col-sm-6">
+			<h4>Original: {{ photo.image_filename }}</h4>
 			{% if photo.image_url %}
-			<img src="{{ photo.image_url }}" alt="{{ photo }}" style="width:240px;height:180px;">
+			<img src="{{ photo.image_url }}" alt="{{ photo }}" style="width: 100%; height: 100%; object-fit: contain;">
+			{% endif %}
+		</div>
+		<div class="col-sm-6">
+			<h4>Processed: {{ photo.processed_filename }}</h4>
+			{% if photo.processed_url %}
+			<img src="{{ photo.processed_url }}" alt="{{ photo }}" style="width: 100%; height: 100%; object-fit: contain;">
 			{% endif %}
 		</div>
 		{% endfor %}
