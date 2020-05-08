@@ -97,7 +97,6 @@ def save_and_predict(file):
                       coco_labels[int(detection_classes[idx])], str(round(detection_scores[idx], 2))))
     image_io = BytesIO()
     source_img.save(image_io, format="JPEG")
-
     image_io.seek(0)
 
     processed_filename = 'proccessed_' + filename
@@ -165,3 +164,17 @@ def get_results_csv():
     output.headers["Content-Disposition"] = "attachment; filename=results_for_%s.csv" % current_user.username
     output.headers["Content-type"] = "text/csv"
     return output
+
+
+@main_bp.route("/get-image/<filename>")
+@login_required
+def get_image(filename):
+    image_io = BytesIO()
+    source_img = Image.open(photos.path(filename)).convert("RGB")
+    source_img.save(image_io, format="JPEG")
+    image_io.seek(0)
+    response = make_response(image_io.getvalue())
+    response.headers.set('Content-Type', 'image/jpeg')
+    response.headers.set(
+        'Content-Disposition', 'attachment', filename='%s.jpg' % filename)
+    return response

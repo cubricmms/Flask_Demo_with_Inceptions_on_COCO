@@ -12,7 +12,8 @@ def allowed_file(filename):
 
 def get_image_np(image_file):
     image = PIL.Image.open(image_file)
-    return numpy.array(image)
+    rgb_im = image.convert('RGB')
+    return numpy.array(rgb_im)
 
 
 coco_labels = {1: 'person', 2: 'bicycle', 3: 'car', 4: 'motorcycle', 5: 'airplane', 6: 'bus', 7: 'train', 8: 'truck',

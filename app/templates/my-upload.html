@@ -4,11 +4,13 @@
 <div class="user-profile">
 	<div class="page-header">
 		<h2 style="display: inline-block; width: 100%; margin-right: -50%;"> {{current_user.username}}'s uploads </h2>
+		{% if photos %}
 		<a href="{{ url_for('main_bp.get_results_csv') }}">
 			<button class="btn btn-sm btn-info" type="button" style="float: right; margin-top:30px; margin-right:40px;">
-				Download All
+				Download CSV
 			</button>
 		</a>
+		{% endif %}
 	</div>
 
 
@@ -28,9 +30,11 @@
 			{% endif %}
 		</div>
 		<div class="col-sm-2">
-			<button class="btn btn-sm btn-info" type="submit"
-			        style=" margin-top: 150px; margin-left:20%;"> Download
-			</button>
+			<a href="{{ url_for('main_bp.get_image', filename=photo.processed_filename) }}">
+				<button class="btn btn-sm btn-info" type="button"
+				        style=" margin-top: 150px; margin-left:20%;"> Download Image
+				</button>
+			</a>
 		</div>
 		{% endfor %}
 	</div>
