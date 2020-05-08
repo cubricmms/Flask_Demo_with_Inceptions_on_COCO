@@ -3,24 +3,34 @@
 
 <div class="user-profile">
 	<div class="page-header">
-		<h2>{{current_user.username}}'s uploads</h2>
+		<h2 style="display: inline-block; width: 100%; margin-right: -50%;"> {{current_user.username}}'s uploads </h2>
+		<a href="{{ url_for('main_bp.get_results_csv') }}">
+			<button class="btn btn-sm btn-info" type="button" style="float: right; margin-top:30px; margin-right:40px;">
+				Download All
+			</button>
+		</a>
 	</div>
 
 
 	<div class="row">
 		{% for photo in photos %}
-		<div class="col-sm-6">
+		<div class="col-sm-5">
 			<h4>Original: {{ photo.image_filename }}</h4>
 			{% if photo.image_url %}
 			<img src="{{ photo.image_url }}" alt="{{ photo }}" style="width: 100%; height: 100%; object-fit: contain;">
 			{% endif %}
 		</div>
-		<div class="col-sm-6">
+		<div class="col-sm-5">
 			<h4>Processed: {{ photo.processed_filename }}</h4>
 			{% if photo.processed_url %}
 			<img src="{{ photo.processed_url }}" alt="{{ photo }}"
 			     style="width: 100%; height: 100%; object-fit: contain;">
 			{% endif %}
+		</div>
+		<div class="col-sm-2">
+			<button class="btn btn-sm btn-info" type="submit"
+			        style=" margin-top: 150px; margin-left:20%;"> Download
+			</button>
 		</div>
 		{% endfor %}
 	</div>

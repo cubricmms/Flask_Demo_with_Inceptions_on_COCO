@@ -1,7 +1,7 @@
 from datetime import datetime as dt
 
 import requests
-from flask import request, render_template, Blueprint, flash, redirect, url_for, abort
+from flask import request, render_template, Blueprint, flash, redirect, url_for, abort, make_response
 from flask_login import login_user, current_user, login_required, logout_user
 from sqlalchemy.exc import IntegrityError
 
@@ -12,7 +12,8 @@ from .utils import get_image_np, coco_labels
 
 from PIL import Image, ImageFont, ImageDraw, ImageEnhance
 from werkzeug.datastructures import FileStorage
-from io import BytesIO
+from io import BytesIO, StringIO
+import csv
 
 # Blueprint Configuration
 main_bp = Blueprint('main_bp', __name__, template_folder='templates', static_folder='static')
@@ -141,3 +142,26 @@ def show_all():
     if photos is None:
         abort(404)
     return render_template('my-upload.html', photos=_photos)
+
+
+@main_bp.route("/get-results-csv")
+@login_required
+def get_results_csv():
+    si = StringIO()
+    fieldnames = ['file_name', 'class', 'num_detection', 'boxes', 'score']
+    cw = csv.writer(si)
+    cw.writerow(fieldnames)
+
+    uid = current_user.id
+    _photos = Photo.query.filter(Photo.user_id == int(uid)).all()
+    for photo in _photos:
+        file_name = photo.image_filename
+        _class = photo.classes
+        num_detection = photo.num_detection
+        boxes = photo.boxes
+        score = photo.score
+        cw.writerow([file_name, _class, str(num_detection), boxes, score])
+    output = make_response(si.getvalue())
+    output.headers["Content-Disposition"] = "attachment; filename=results_for_%s.csv" % current_user.username
+    output.headers["Content-type"] = "text/csv"
+    return output
