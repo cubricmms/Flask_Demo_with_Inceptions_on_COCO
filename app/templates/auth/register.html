@@ -2,24 +2,24 @@
 {% from "_form_macros.html" import render_field %}
 
 {% block header %}
-  <h1>{% block title %}Register{% endblock %}</h1>
+<h1>{% block title %}Register{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
 
 <div class="user-registration">
-  <div class="page-header">
-    <h2>Please Register Your New Account</h2>
-  </div>
-<form action="{{ url_for('main_bp.register') }}" method="post">
-    {{ form.csrf_token }}
-    <dl>
-      {{ render_field(form.username, placeholder="User name") }}
-      {{ render_field(form.email, placeholder="Email address") }}
-      {{ render_field(form.password, placeholder="Password") }}
-      {{ render_field(form.confirm, placeholder="Confirm password") }}
-    </dl>
-    <button class="btn btn-sm btn-success" type="submit">Create New Account</button>
-  </form>
+	<div class="page-header">
+		<h2>Please Register Your New Account</h2>
+	</div>
+	<form action="{{ url_for('main_bp.register') }}" method="post">
+		{{ form.csrf_token }}
+		<dl>
+			{{ render_field(form.username, placeholder="User name") }}
+			{{ render_field(form.email, placeholder="Email address") }}
+			{{ render_field(form.password, placeholder="Password") }}
+			{{ render_field(form.confirm, placeholder="Confirm password") }}
+		</dl>
+		<button class="btn btn-sm btn-success" type="submit">Create New Account</button>
+	</form>
 </div>
 {% endblock %}

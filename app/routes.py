@@ -93,7 +93,7 @@ def save_and_predict(file):
         draw.rectangle(((xmin, ymin), (xmax, ymax)))
         draw.text((xmin, ymin),
                   "class: %s confidence %s" % (
-                  coco_labels[int(detection_classes[idx])], str(round(detection_scores[idx], 2))))
+                      coco_labels[int(detection_classes[idx])], str(round(detection_scores[idx], 2))))
     image_io = BytesIO()
     source_img.save(image_io, format="JPEG")
 
