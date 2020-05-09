@@ -19,3 +19,4 @@ app/static/img/
 app/templates/dashboard.jinja2
 app/templates/layout.jinja2
 app/templates/login.jinja2
+.idea/demo.iml
