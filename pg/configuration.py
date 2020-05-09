@@ -26,10 +26,10 @@ class Config:
 
     # Uploads
     UPLOADS_DEFAULT_DEST = './app/static/img/'
-    UPLOADS_DEFAULT_URL = 'http://localhost:5000/static/img/'
+    UPLOADS_DEFAULT_URL = 'http://web:5000/static/img/'
 
     UPLOADED_PHOTOS_DEST = './app/static/img/'
-    UPLOADED_PHOTOS_URL = 'http://localhost:5000/static/img/'
+    UPLOADED_PHOTOS_URL = 'http://web:5000/static/img/'
 
     # enables the Cross-Site Request Forgery (CSRF) protection in your forms
     WTF_CSRF_ENABLED = True
