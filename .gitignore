@@ -1,4 +1,5 @@
 pg/app/static/img/
+pg/.idea
 .idea/.gitignore
 .idea/inspectionProfiles/
 .idea/misc.xml
