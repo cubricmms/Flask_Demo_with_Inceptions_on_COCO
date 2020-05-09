@@ -1,8 +1,8 @@
-export FLASK_DEBUG=1
+FLASK_DEBUG=1
 
-export SECRET_KEY='WEREQC'
-export FLASK_APP=run.py
-export FLASK_ENV=development
+SECRET_KEY='WEREQC'
+FLASK_APP=run.py
+FLASK_ENV=development
 
 # export APP_CONFIG_FILE=configuration.py
 

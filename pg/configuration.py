@@ -24,13 +24,11 @@ class Config:
     SQLALCHEMY_DATABASE_URI = environ.get('DATABASE_URL')
     SQLALCHEMY_TRACK_MODIFICATIONS = environ.get('SQLALCHEMY_TRACK_MODIFICATIONS')
 
-    # Upload
-    TOP_LEVEL_DIR = environ.get('TOP_LEVEL_DIR')
     # Uploads
-    UPLOADS_DEFAULT_DEST = TOP_LEVEL_DIR + '/app/static/img/'
+    UPLOADS_DEFAULT_DEST = './app/static/img/'
     UPLOADS_DEFAULT_URL = 'http://localhost:5000/static/img/'
 
-    UPLOADED_PHOTOS_DEST = TOP_LEVEL_DIR + '/app/static/img/'
+    UPLOADED_PHOTOS_DEST = './app/static/img/'
     UPLOADED_PHOTOS_URL = 'http://localhost:5000/static/img/'
 
     # enables the Cross-Site Request Forgery (CSRF) protection in your forms

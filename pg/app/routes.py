@@ -78,7 +78,7 @@ def save_and_predict(file):
     url = photos.url(filename)
     path = photos.path(filename)
     payload = {"instances": [get_image_np(path).tolist()]}
-    res = requests.post("http://localhost:8080/v1/models/default:predict", json=payload)
+    res = requests.post("http://serving:8080/v1/models/default:predict", json=payload)
     predictions = res.json().get('predictions')[0]
     num_detections = predictions.get('num_detections')
     num_detections = int(num_detections)
